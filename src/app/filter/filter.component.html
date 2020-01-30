@@ -1,10 +1,10 @@
-<div>Vendors</div>
-<form [formGroup]="myForm" (ngSubmit)="onSubmit()">
-  <input type="text" placeholder="Search.." formControlName="search">
+<div>{{title}}</div>
+<form [formGroup]="myForm">
+  <input type="text" [placeholder]="searchText" formControlName="search">
 
   <div *ngFor="let data of searchedcheckbox; let i=index">
     <label *ngIf="i < numberOfcheckboxItemsToBeShown">
-      <input type="checkbox" [value]="data" [checked]="checkboxItemsStatus[i]" (change)="onCheckboxChange($event, i)" />
+      <input type="checkbox" [value]="data" [checked]="checkboxItemsStatus[i].value" (change)="onCheckboxChange($event, data)" />
       {{data}}
     </label>
   </div>

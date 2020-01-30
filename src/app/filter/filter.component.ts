@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, FormControl } from '@angular/forms';
 
 @Component({
@@ -8,17 +8,21 @@ import { FormBuilder, FormGroup, FormArray, FormControl } from '@angular/forms';
 })
 export class FilterComponent implements OnInit {
   myForm: FormGroup;
-  checkboxData = ['Aerohive', 'AvePoint', 'BEA System', 'Barracuda', 'BitTitan', 'Cirius', 'Cisco', 'Commvault'];
+  @Input() checkboxData = ['Aerohive', 'AvePoint', 'BEA System', 'Barracuda', 'BitTitan', 'Cirius', 'Cisco', 'Commvault'];
   searchedcheckbox = [];
   checkboxItemsStatus = [];
   numberOfcheckboxItemsToBeShown = 2;
   @Input() itemLimit = 2;
+  @Input() title = 'Title';
+  @Input() searchText = 'Search';
+  @Output() checkboxStateChanged = new EventEmitter();
 
+// Need to combine searchedcheckbox and checkboxItemsStatus
   constructor(private fb: FormBuilder) {
     this.viewAllItems();
   }
 
-  onCheckboxChange(e, index) {
+  onCheckboxChange(e, indexData) {
     const checkArray: FormArray = this.myForm.get('selectedCheckBox') as FormArray;
 
     if (e.target.checked) {
@@ -33,7 +37,14 @@ export class FilterComponent implements OnInit {
         i++;
       });
     }
-    this.checkboxItemsStatus[index] = !this.checkboxItemsStatus[index];
+    this.checkboxItemsStatus.forEach(d => {
+      if (d.name === indexData) {
+        d.value = !d.value;
+      }
+    });
+    console.log(this.checkboxItemsStatus, indexData);
+    // this.checkboxItemsStatus[index].value = !this.checkboxItemsStatus[index].value;
+    // this.checkboxStateChanged.emit(this.checkboxItemsStatus[index]);
   }
 
   ngOnInit() {
@@ -46,7 +57,7 @@ export class FilterComponent implements OnInit {
 
     this.searchedcheckbox = this.checkboxData;
     this.searchedcheckbox.forEach(d => {
-      this.checkboxItemsStatus.push(false);
+      this.checkboxItemsStatus.push({ name: d, value: false });
     });
 
     this.viewLimitedItems();
@@ -55,6 +66,12 @@ export class FilterComponent implements OnInit {
   filterItems(arr, query) {
     return arr.filter((el) => {
       return el.toLowerCase().indexOf(query.toLowerCase()) !== -1;
+    });
+  }
+
+  filtercheckboxstatusItems(arr, query) {
+    return arr.filter((el) => {
+      return el.name.toLowerCase().indexOf(query.toLowerCase()) !== -1;
     });
   }
 
@@ -69,6 +86,8 @@ export class FilterComponent implements OnInit {
   valueChangeItems() {
     this.myForm.controls.search.valueChanges.subscribe(val => {
       this.searchedcheckbox = this.filterItems(this.checkboxData, val);
+      this.checkboxItemsStatus = this.filtercheckboxstatusItems(this.checkboxItemsStatus, val);
+      console.log(this.checkboxItemsStatus, this.searchedcheckbox);
       this.viewLimitedItems();
     });
   }
