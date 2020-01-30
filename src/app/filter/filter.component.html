@@ -1,0 +1,13 @@
+<div>Vendors</div>
+<form [formGroup]="myForm" (ngSubmit)="onSubmit()">
+  <input type="text" placeholder="Search.." formControlName="search">
+
+  <div *ngFor="let data of searchedcheckbox; let i=index">
+    <label *ngIf="i < numberOfcheckboxItemsToBeShown">
+      <input type="checkbox" [value]="data" [checked]="checkboxItemsStatus[i]" (change)="onCheckboxChange($event, i)" />
+      {{data}}
+    </label>
+  </div>
+</form>
+<a (click)="viewAllItems()" *ngIf="numberOfcheckboxItemsToBeShown !== checkboxData.length && checkboxData.length > itemLimit">View All</a>
+<a (click)="viewLimitedItems()" *ngIf="numberOfcheckboxItemsToBeShown === checkboxData.length && checkboxData.length > itemLimit">View Limited Items</a>
