@@ -67,10 +67,8 @@ export class FilterComponent implements OnInit {
   }
 
   valueChangeItems() {
-    this.searchedcheckbox = this.checkboxData;
     this.myForm.controls.search.valueChanges.subscribe(val => {
-      this.searchedcheckbox = this.filterItems(this.searchedcheckbox, this.myForm.value.search);
-      console.log(this.myForm.value, this.searchedcheckbox);
+      this.searchedcheckbox = this.filterItems(this.checkboxData, val);
       this.viewLimitedItems();
     });
   }
