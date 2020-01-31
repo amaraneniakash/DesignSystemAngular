@@ -4,7 +4,7 @@
 
   <div *ngFor="let data of searchedcheckbox; let i=index">
     <label *ngIf="i < numberOfcheckboxItemsToBeShown">
-      <input type="checkbox" [value]="data" [checked]="checkboxItemsStatus[i].value" (change)="onCheckboxChange($event, data)" />
+      <input type="checkbox" [value]="data" [checked]="checkboxItemsStatus.indexOf(data) !== -1" (change)="onCheckboxChange($event, data)" />
       {{data}}
     </label>
   </div>

@@ -17,7 +17,6 @@ export class FilterComponent implements OnInit {
   @Input() searchText = 'Search';
   @Output() checkboxStateChanged = new EventEmitter();
 
-// Need to combine searchedcheckbox and checkboxItemsStatus
   constructor(private fb: FormBuilder) {
     this.viewAllItems();
   }
@@ -37,14 +36,8 @@ export class FilterComponent implements OnInit {
         i++;
       });
     }
-    this.checkboxItemsStatus.forEach(d => {
-      if (d.name === indexData) {
-        d.value = !d.value;
-      }
-    });
-    console.log(this.checkboxItemsStatus, indexData);
-    // this.checkboxItemsStatus[index].value = !this.checkboxItemsStatus[index].value;
-    // this.checkboxStateChanged.emit(this.checkboxItemsStatus[index]);
+    this.checkboxItemsStatus = this.myForm.value.selectedCheckBox;
+    this.checkboxStateChanged.emit(indexData);
   }
 
   ngOnInit() {
@@ -56,22 +49,12 @@ export class FilterComponent implements OnInit {
     this.valueChangeItems();
 
     this.searchedcheckbox = this.checkboxData;
-    this.searchedcheckbox.forEach(d => {
-      this.checkboxItemsStatus.push({ name: d, value: false });
-    });
-
     this.viewLimitedItems();
   }
 
   filterItems(arr, query) {
     return arr.filter((el) => {
       return el.toLowerCase().indexOf(query.toLowerCase()) !== -1;
-    });
-  }
-
-  filtercheckboxstatusItems(arr, query) {
-    return arr.filter((el) => {
-      return el.name.toLowerCase().indexOf(query.toLowerCase()) !== -1;
     });
   }
 
@@ -86,8 +69,6 @@ export class FilterComponent implements OnInit {
   valueChangeItems() {
     this.myForm.controls.search.valueChanges.subscribe(val => {
       this.searchedcheckbox = this.filterItems(this.checkboxData, val);
-      this.checkboxItemsStatus = this.filtercheckboxstatusItems(this.checkboxItemsStatus, val);
-      console.log(this.checkboxItemsStatus, this.searchedcheckbox);
       this.viewLimitedItems();
     });
   }
